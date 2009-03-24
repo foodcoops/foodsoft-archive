@@ -1,15 +1,13 @@
-# Loads and returns config and databases for selected foodcoop.
+raw_config = File.read(RAILS_ROOT + "/config/app_config.yml")
+APP_CONFIG = YAML.load(raw_config)[RAILS_ENV].symbolize_keys
+
 module Foodsoft
   @@configs = YAML.load(File.read(RAILS_ROOT + "/config/app_config.yml"))
   @@databases = YAML.load(File.read(RAILS_ROOT + "/config/database.yml"))
   @@env = RAILS_ENV
 
-  def env=(env)
+  def set_env(env)
     @@env = env
-  end
-
-  def env
-    @@env
   end
 
   def config(rails_env = @@env)
@@ -26,6 +24,6 @@ end
 
 # Configuration of the exception_notification plugin
 # Mailadresses are set in config/foodsoft.yaml
-ExceptionNotifier.exception_recipients = Foodsoft.config[:notification]['error_recipients']
-ExceptionNotifier.sender_address = Foodsoft.config[:notification]['sender_address']
-ExceptionNotifier.email_prefix = Foodsoft.config[:notification]['email_prefix']
+ExceptionNotifier.exception_recipients = APP_CONFIG[:notification]['error_recipients']
+ExceptionNotifier.sender_address = APP_CONFIG[:notification]['sender_address']
+ExceptionNotifier.email_prefix = APP_CONFIG[:notification]['email_prefix']
