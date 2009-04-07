@@ -1,11 +1,12 @@
 %table
   %tr
     %th Name
-    %th Gebinde
     %th Netto-/Bruttopreis
+    %th Einheit
     %th Bestellte Einheiten
     - unless order.stockit?
       %th Volle Gebinde
+    %th Nicht-volles Gebinde
   - total_net, total_gross, counter = 0, 0, 0
   - order.articles_grouped_by_category.each do |category_name, order_articles|
     %tr{:style => "background-color:#EFEFEF"}
@@ -20,13 +21,14 @@
       - total_gross += units * unit_quantity * gross_price
       %tr{:class => cycle('even', 'odd', :name => 'articles'), :style => "color: #{units > 0 ? 'green' : 'red'}"}
         %td=h order_article.article.name
-        %td= "#{unit_quantity} x #{order_article.article.unit}"
         %td= "#{number_to_currency(net_price)} / #{number_to_currency(gross_price)}"
+        %td= "#{order_article.article.unit}"
         - if order.stockit?
           %td= units
         - else
           %td= "#{order_article.quantity} + #{order_article.tolerance}" if unit_quantity > 1
           %td= units
+        %td= "#{order_article.quantity % unit_quantity} / #{unit_quantity}" if unit_quantity > 1
 %p
   Summe (Netto/Brutto-Preise):
   = "#{number_to_currency(total_net)} / #{number_to_currency(total_gross)}"
