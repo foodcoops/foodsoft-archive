@@ -14,6 +14,12 @@
     = javascript_include_tag 'application'
     = javascript_include_tag('ordering') if (controller.controller_name == "ordering")
   %body
+    #message
+      #loader.loading(style="display:none") Lade...
+      - flash.each do |name, msg|
+        = content_tag :div, msg, :id => "message_text", :class => name
+        = javascript_tag "$('message_text').fade({delay:5});"
+    
     #logininfo= render :partial => 'shared/loginInfo'
     
     #header
@@ -25,17 +31,8 @@
 
     #main
       #content
-        - if flash[:notice]
-          %h3.notice#flashNotice= flash[:notice]
-        - if flash[:error]
-          %h3.error#flashError= flash[:error]
-        #loader{:style => "display:none;"}= image_tag("loader.gif", :border => 0)
+        //#loader{:style => "display:none;"}= image_tag("loader.gif", :border => 0)
         - if yield(:title)
           %h1= yield(:title)
         = yield
     #ajax_box(style="display:none")
-
-    - if flash[:notice]
-      = javascript_tag("new Effect.Highlight('flashNotice', {delay:0.8, duration:1});")
-    - if flash[:error]
-      = javascript_tag("new Effect.Highlight('flashError', {delay:0.8, duration:1});")
