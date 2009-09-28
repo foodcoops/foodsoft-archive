@@ -3,9 +3,12 @@
   %head
     %meta{"http-equiv" => "content-type", :content => "text/html;charset=UTF-8"}
     %title= "FoodSoft - " + (yield(:title) or controller.controller_name)
+    = stylesheet_link_tag "blueprint/screen"
+    = stylesheet_link_tag "blueprint/print", :media => "print"
     = stylesheet_link_tag 'foodsoft'
     = stylesheet_link_tag "print", :media => "print"
     <!--[if lte IE 7]>
+    = stylesheet_link_tag "blueprint/ie"
     = stylesheet_link_tag 'ie_hacks'
     <![endif]-->
     = javascript_include_tag 'prototype'
