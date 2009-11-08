@@ -41,7 +41,7 @@
               -%>
               <tr class="<%= cycle('even', 'odd', :name => 'articles') %>" valign="top"
                   onmouseover="$('article-info_<%= order_article.id %>').show();" onmouseout="$('article-info_<%= order_article.id %>').hide();">
-                <td class="name"><%= order_article.article.name %></td>
+                <td class="name"><%= order_article.article.name %> <%= flag_icons(order_article.article) if order_article.article.flags > 0 -%></td>
                 <td><%=h order_article.article.origin %></td>
                 <td><%= number_to_currency(@price[i]) %></td>
                 <td><span id="missing_units_<%= i %>"><%= if @order.stockit?
