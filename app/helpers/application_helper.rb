@@ -130,6 +130,46 @@ module ApplicationHelper
     image_tag icons[name][:file], options
   end
 
+  def flag_icons(article, options={})
+    return if article.nil?
+    icons = { :vegan  => { :file => 'i_vegan.png', :alt => 'Vegan'},
+              :regional => { :file => 'i_regional.png', :alt => 'Regional'},
+              :blauer_engel => { :file => 'i_blauer-engel.png', :alt => 'Blauer Engel'},
+              :fair_trade => { :file => 'i_fair-trade.png', :alt => 'Fair gehandelt'}}
+    default_options = {:class => 'flag_icon', :border => '0', :size => '20x20'}
+    result = ''
+
+    if article.vegan? 
+      options[:alt] ||= icons[:vegan][:alt]
+      options[:title] ||= icons[:vegan][:title]
+      options.merge!(default_options)
+      result += image_tag icons[:vegan][:file], options
+    end
+
+    if article.regional?
+      options[:alt] ||= icons[:regional][:alt]
+      options[:title] ||= icons[:regional][:title]
+      options.merge!(default_options)
+      result += image_tag icons[:regional][:file], options
+    end
+
+    if article.fair_trade?
+      options[:alt] ||= icons[:fair_trade][:alt]
+      options[:title] ||= icons[:fair_trade][:title]
+      options.merge!(default_options)
+      result += image_tag icons[:fair_trade][:file], options
+    end
+
+    if article.blauer_engel?
+      options[:alt] ||= icons[:blauer_engel][:alt]
+      options[:title] ||= icons[:blauer_engel][:title]
+      options.merge!(default_options)
+      result += image_tag icons[:blauer_engel][:file], options
+    end
+    logger.debug "this is result: #{result}"
+    result
+  end
+
   # Remote links with default 'loader'.gif during request
   def remote_link_to(text, options={})
     remote_options = {

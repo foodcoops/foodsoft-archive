@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090907120012) do
+ActiveRecord::Schema.define(:version => 20091108123052) do
 
   create_table "article_categories", :force => true do |t|
     t.string "name",        :default => "", :null => false
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(:version => 20090907120012) do
     t.datetime "deleted_at"
     t.string   "type"
     t.integer  "quantity",                                          :default => 0
+    t.integer  "flags",                                             :default => 0,    :null => false
   end
 
   add_index "articles", ["article_category_id"], :name => "index_articles_on_article_category_id"
@@ -256,13 +257,6 @@ ActiveRecord::Schema.define(:version => 20090907120012) do
     t.integer  "parent_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  add_index "pages", ["permalink"], :name => "index_pages_on_permalink"
-  add_index "pages", ["title"], :name => "index_pages_on_title"
-
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
   end
 
   create_table "stock_changes", :force => true do |t|

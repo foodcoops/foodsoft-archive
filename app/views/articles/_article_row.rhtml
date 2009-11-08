@@ -2,7 +2,7 @@
   <%= check_box_tag 'selected_articles[]', @article.id.to_s, false,
         {:id => "checkbox_#{@article.id.to_s}", :onclick => "checkRow('#{@article.id.to_s}')"} %>
 </td>
-<td><%=h @article.name -%></td>
+<td><%=h @article.name -%> <%= flag_icons(@article) if @article.flags > 0 -%></td>
 <td><%= @article.origin -%></td>
 <td><%=h truncate(@article.article_category.name, :length => 11) if @article.article_category -%></td>
 <td><%=h @article.unit -%></td>

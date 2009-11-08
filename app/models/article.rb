@@ -22,6 +22,7 @@
 #  quantity            :integer         default(0)
 #  deleted_at          :datetime
 #  type                :string(255)
+#  flags               :integer         default(0)
 #
 
 class Article < ActiveRecord::Base
@@ -47,6 +48,13 @@ class Article < ActiveRecord::Base
   # Callbacks
   before_save :update_price_history
   before_destroy :check_article_in_use
+
+  # Flags
+  include FlagShihTzu
+  has_flags 1 => :vegan,
+            2 => :regional,
+            3 => :fair_trade,
+            4 => :blauer_engel
 
   # Custom attribute setter that accepts decimal numbers using localized decimal separator.
   def price=(price)
