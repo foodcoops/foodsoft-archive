@@ -17,14 +17,14 @@ class Finance::BalancingController < ApplicationController
     @comments = @order.comments
 
     if params['sort']
-    sort = case params['sort']
+      sort = case params['sort']
              when "name"  then "articles.name"
              when "order_number" then "articles.order_number"
              when "name_reverse"  then "articles.name DESC"
              when "order_number_reverse" then "articles.order_number DESC"
              end
     else
-      sort = "articles.name"
+      sort = "id"
     end
 
     @articles = @order.order_articles.ordered.find(
@@ -32,7 +32,7 @@ class Finance::BalancingController < ApplicationController
       :include => :article,
       :order => sort
     )
-
+      
     if params[:sort] == "order_number"
       @articles = @articles.sort { |a,b| a.article.order_number.gsub(/[^[:digit:]]/, "").to_i <=> b.article.order_number.gsub(/[^[:digit:]]/, "").to_i }
     elsif params[:sort] == "order_number_reverse"
@@ -79,20 +79,24 @@ class Finance::BalancingController < ApplicationController
   
   def auto_complete_for_article_name
     order = Order.find(params[:order_id])
-    type = order.stockit? ? "type = 'StockArticle'" : "type IS NULL"
-    @articles = Article.find(:all,
-      :conditions => [ "supplier_id = ? AND #{type} AND LOWER(name) LIKE ?",
-        order.supplier_id,
-        '%' + params[:article][:name].downcase + '%' ],
-      :order => 'name ASC',
-      :limit => 8)
+    find_params = {
+      :conditions => ["LOWER(articles.name) LIKE ?", "%#{params[:article][:name].downcase}%" ],
+      :order => 'articles.name ASC',
+      :limit => 8
+    }
+    @articles = if order.stockit?
+      StockArticle.all find_params
+    else
+      order.supplier.articles.all find_params
+    end
+  
     render :partial => 'shared/auto_complete_articles'
-
   end
   
   def create_order_article
     @order = Order.find(params[:order_id])
-    order_article = @order.order_articles.find_by_article_id(params[:order_article][:article_id])
+    article = Article.find(params[:order_article][:article_id])
+    order_article = @order.order_articles.find_by_article_id(article.id)
 
     unless order_article
       # Article wasn't already assigned with this order, lets create a new one
@@ -111,6 +115,12 @@ class Finance::BalancingController < ApplicationController
       else
         page["edit_box"].replace_html :partial => "new_order_article"
       end
+    end
+
+  rescue
+    render :update do |page|
+      page.replace_html "edit_box", :text => "<b>Keinen Artikel gefunden. Bitte erneut versuchen.</b>"
+      page.insert_html :bottom, "edit_box", :partial => "new_order_article"
     end
   end
 
@@ -145,6 +155,9 @@ class Finance::BalancingController < ApplicationController
   def destroy_order_article
     order_article = OrderArticle.find(params[:id])
     order_article.destroy
+    # Updates ordergroup values
+    order_article.group_order_articles.each { |goa| goa.group_order.update_price! }
+    
     render :update do |page|
       page["order_article_#{order_article.id}"].remove
       page["group_order_articles_#{order_article.id}"].remove

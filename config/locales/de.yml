@@ -2,6 +2,9 @@
 # by Clemens Kofler (clemens@railway.at)
  
 de:
+  home:
+    index:
+      title: Startseite
   date:
     formats:
       default: "%d.%m.%Y"
@@ -127,6 +130,10 @@ de:
       article:
         price: Nettopreis
         gross_price: Bruttopreis
+        unit: Einheit
+        unit_quantity: Gebindegröße
+        tax: MwSt
+        deposit: Pfand
       stock_article:
         price: Nettopreis
       user:

@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090120184410
 #
 # Table name: groups
 #
@@ -34,12 +33,15 @@
 class Ordergroup < Group
   acts_as_paranoid                    # Avoid deleting the ordergroup for consistency of order-results
   extend ActiveSupport::Memoizable    # Ability to cache method results. Use memoize :expensive_method
+  serialize :stats
 
   has_many :financial_transactions, :order => "created_on DESC"
   has_many :group_orders
   has_many :orders, :through => :group_orders
 
   validates_numericality_of :account_balance, :message => 'ist keine gültige Zahl'
+
+  after_create :update_stats!
 
   def contact
     "#{contact_phone} (#{contact_person})"
@@ -76,6 +78,23 @@ class Ordergroup < Group
     end
   end
 
+  def update_stats!
+    time = 6.month.ago
+    jobs = users.collect { |u| u.tasks.done.all(:conditions => ["updated_on > ?", time]).size }.sum
+    orders_sum = group_orders.select { |go| go.order.ends > time }.collect(&:price).sum
+    update_attribute(:stats, {:jobs_size => jobs, :orders_sum => orders_sum})
+  end
+
+  def avg_jobs_per_euro
+    stats[:orders_sum] != 0 ? stats[:jobs_size].to_f / stats[:orders_sum].to_f : 0
+  end
+
+  # Global average
+  def self.avg_jobs_per_euro
+    stats = Ordergroup.all.collect(&:stats)
+    stats.collect {|s| s[:jobs_size].to_f }.sum / stats.collect {|s| s[:orders_sum].to_f }.sum
+  end
+  
   private
   
   # If this order group's account balance is made negative by the given/last transaction, 

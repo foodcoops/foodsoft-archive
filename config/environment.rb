@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.2.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -45,16 +45,7 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector
 
   # Make Active Record use UTC-base instead of local time
-  config.time_zone = 'UTC'
-  
-  # Your secret key for verifying cookie session data integrity.
-  # If you change this key, all old sessions will become invalid!
-  # Make sure the secret is at least 30 characters and all random, 
-  # no regular words or you'll be exposed to dictionary attacks.
-  config.action_controller.session = {
-    :session_key => '_foodsoft_session',
-    :secret      => "dhjfuez47892nsl39fh83ham3jsdfjkh4879sdh"
-  }
+  config.time_zone = 'Berlin'
   
   # Specify gems that this application depends on.
   # They can then be installed with "rake gems:install" on new installations.
@@ -66,7 +57,7 @@ Rails::Initializer.run do |config|
   #
   # library for parsing/writing files from/to csv-file
   config.gem "fastercsv"
-  config.gem "prawn"
+  config.gem "prawn", :version => '<=0.6.3'
   config.gem "haml", :version => '>=2.0.6'
 
   # The internationalization framework can be changed to have another default locale (standard is :en) or more load paths.
@@ -76,10 +67,3 @@ Rails::Initializer.run do |config|
 
   # See Rails::Configuration for more options
 end
- 
-# Defines custom logging format.
-#class Logger
-#  def format_message(severity, timestamp, progname, msg)
-#    format("%s %-5.5s %s\n", timestamp.strftime('%H:%M:%S'), severity, msg)
-#  end
-#end

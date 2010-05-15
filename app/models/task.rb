@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090119155930
 #
 # Table name: tasks
 #
@@ -28,7 +27,8 @@ class Task < ActiveRecord::Base
   attr_protected :users
   
   validates_length_of :name, :minimum => 3
-  
+
+  after_save :update_ordergroup_stats
   
   def is_assigned?(user)
     self.assignments.detect {|ass| ass.user_id == user.id }
@@ -77,5 +77,13 @@ class Task < ActiveRecord::Base
   
   def user_list
     @user_list ||= users.collect(&:nick).join(", ")
+  end
+
+  private
+
+  def update_ordergroup_stats
+    if done
+      users.each { |u| u.ordergroup.update_stats! }
+    end
   end
 end

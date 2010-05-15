@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090119155930
 #
 # Table name: group_order_article_quantities
 #

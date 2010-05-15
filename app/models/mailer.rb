@@ -58,6 +58,22 @@ class Mailer < ActionMailer::Base
               :transaction  => transaction
   end
 
+  def feedback(user, message)
+    subject     "[Foodsoft] Feeback von #{user.email}"
+    recipients  Foodsoft.config[:notification]["error_recipients"]
+    from        "#{user.nick} <#{user.email}>"
+    headers     'Sender' => Foodsoft.config[:notification]["sender_address"],
+                'Errors-To' =>  Foodsoft.config[:notification]["sender_address"]
+    body        :user => user, :message => message
+  end
+
+  def not_enough_users_assigned(task,user)
+    prepare_system_message(user)
+    subject   "[#{Foodsoft.config[:name]}] #{task.name} braucht noch Leute!"
+    body        :task => task, :user => user,
+                :task_url => File.join(Foodsoft.config[:base_url], "tasks/workgroup", task.workgroup_id.to_s)
+  end
+
   protected
 
   def prepare_system_message(recipient)

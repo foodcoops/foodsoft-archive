@@ -1,0 +1,102 @@
+- if params[:preview]
+  %h2 Vorschau
+  #preview= render :partial => 'body'
+
+#wiki-syntax-help
+  .box_title
+    %h2 Schnelle Formatierungshilfe
+  .column_content
+    %table(frame="void")
+      %tbody
+        %tr
+          %td(colspan=2)
+            %b Zeichenformatierung
+        %tr
+          %td
+            %i kursiv
+          %td
+            %pre
+              ''kursiv''<br />
+        %tr
+          %td
+            %b fett
+          %td
+            %pre '''Fett'''<br />
+        %tr
+          %td
+            Keine Wiki-<br/>Formatierung
+          %td
+            %pre &lt;nowiki&gt;text&lt;/nowiki&gt;
+        %tr
+          %td(colspan=2)
+            %b Block-Formatierung
+        %tr
+          %td
+            Überschriften
+          %td
+            %pre
+              \== Ebene 1 ==
+            %pre
+              \=== Ebene 2 ===
+            %pre
+              \==== Ebene 3 ====
+        %tr
+          %td
+            Listen mit Punkten
+          %td
+            %pre
+              * Erster Punkt
+            %pre
+              ** Zweiter Punkt
+        %tr
+          %td
+            Listen mit Zahlen
+          %td
+            %pre
+              \# Ersten Punkt
+            %pre
+              \# Zweiter Punkt
+        %tr
+          %td(colspan=2)
+            %b Link-Formatierung
+        %tr
+          %td
+            Wiki-Links
+          %td
+            %pre
+              [[Foodsoft Wiki Seite]]
+        %tr
+          %td
+            Externe Links
+          %td
+            %pre
+              [http://addresse.net Externe Seite]
+        %tr
+          %td(colspan=2)
+            %b Tabellenformatierung
+        %tr
+          %td
+            Siehe
+            = link_to "Tabellen", "http://www.mediawiki.org/wiki/Help:Tables", :target => '_blank'
+
+- form_for @page do |f|
+  = f.error_messages
+  = f.hidden_field :lock_version
+  %p
+    %b Titel
+    %br/
+    = f.text_field :title
+  %p
+    %b Inhalt
+    %br/
+    = f.text_area :body, :size => "65x30"
+  %p
+    = f.submit "Vorschau", :name => 'preview'
+    |
+    = f.submit "Speichern"
+    |
+    = link_to "Abbrechen", @page
+    | Oberseite ändern:
+    = collection_select(:page, :parent_id, Page.non_redirected, :id, :permalink, {:prompt => "Neue Oberseite?", :include_blank => true})
+
+%div(style="clear:right; height:1px")

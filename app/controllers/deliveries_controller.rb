@@ -3,7 +3,7 @@ class DeliveriesController < ApplicationController
   before_filter :find_supplier, :exclude => :fill_new_stock_article_form
   
   def index
-    @deliveries = @supplier.deliveries.find(:all)
+    @deliveries = @supplier.deliveries.all :order => 'delivered_on DESC'
 
     respond_to do |format|
       format.html # index.html.erb
@@ -22,7 +22,6 @@ class DeliveriesController < ApplicationController
 
   def new
     @delivery = @supplier.deliveries.build
-    @supplier.stock_articles.each { |article| @delivery.stock_changes.build(:stock_article => article) }
     
     respond_to do |format|
       format.html # new.html.erb
@@ -35,7 +34,7 @@ class DeliveriesController < ApplicationController
 
     respond_to do |format|
       if @delivery.save
-        flash[:notice] = 'Delivery was successfully created.'
+        flash[:notice] = 'Lieferung wurde erstellt. Bitte nicht vergessen die Rechnung anzulegen!'
         format.html { redirect_to([@supplier,@delivery]) }
         format.xml  { render :xml => @delivery, :status => :created, :location => @delivery }
       else
@@ -54,7 +53,7 @@ class DeliveriesController < ApplicationController
 
     respond_to do |format|
       if @delivery.update_attributes(params[:delivery])
-        flash[:notice] = 'Delivery was successfully updated.'
+        flash[:notice] = 'Lieferung wurde aktualisiert.'
         format.html { redirect_to([@supplier,@delivery]) }
         format.xml  { head :ok }
       else
@@ -68,6 +67,7 @@ class DeliveriesController < ApplicationController
     @delivery = Delivery.find(params[:id])
     @delivery.destroy
 
+    flash[:notice] = "Lieferung wurde gelöscht."
     respond_to do |format|
       format.html { redirect_to(supplier_deliveries_url(@supplier)) }
       format.xml  { head :ok }
@@ -79,8 +79,8 @@ class DeliveriesController < ApplicationController
     render :update do |page|
       if article.save
         logger.debug "new StockArticle: #{article.id}"
-        page.insert_html :top, 'stock_changes', :partial => 'stock_change',
-          :locals => {:stock_change => article.stock_changes.build}
+        page.insert_html :bottom, 'stock_changes', :partial => 'stock_change',
+          :locals => {:stock_change => article.stock_changes.build, :supplier => @supplier}
 
         page.replace_html 'new_stock_article', :partial => 'stock_article_form',
           :locals => {:stock_article => @supplier.stock_articles.build}
@@ -91,12 +91,11 @@ class DeliveriesController < ApplicationController
     end
   end
 
-  def drop_stock_change
-    stock_change = StockChange.find(params[:stock_change_id])
-    stock_change.destroy
+  def add_stock_change
 
     render :update do |page|
-      page.visual_effect :DropOut, "stock_change_#{stock_change.id}"
+      page.insert_html :bottom, 'stock_changes', :partial => 'stock_change',
+          :locals => {:stock_change => StockChange.new, :supplier => @supplier}
     end
   end
 
@@ -108,14 +107,5 @@ class DeliveriesController < ApplicationController
     )
 
     render :partial => 'stock_article_form', :locals => {:stock_article => stock_article}
-  end
-
-  def in_place_edit_for_stock_quantity
-    stock_change = StockChange.find(params[:editorId])
-    if stock_change.update_attributes(:quantity => params[:value])
-      render :inline => params[:value]
-    else
-      render :inline => "Ein Fehler ist aufgetreten."
-    end
   end
 end

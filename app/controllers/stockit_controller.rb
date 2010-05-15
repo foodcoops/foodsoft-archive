@@ -1,10 +1,10 @@
 class StockitController < ApplicationController
 
   def index
-    @stock_articles = StockArticle.without_deleted(
-      :include => [:supplier, :article_category],
-      :order => 'suppliers.name, article_categories.name, articles.name'
-    )
+    @stock_articles = StockArticle.without_deleted.all(
+        :include => [:supplier, :article_category],
+        :order => 'suppliers.name, article_categories.name, articles.name'
+      )
   end
 
   def new

@@ -32,20 +32,79 @@ namespace :foodsoft do
       puts "Send notifications for #{task.name} to .."
       for user in task.users
         if user.settings['notify.upcoming_tasks'] == 1
-          puts "#{user.email}.."
-          Mailer.deliver_upcoming_tasks(user, task)
+          begin
+            puts "#{user.email}.."
+            Mailer.deliver_upcoming_tasks(user, task)
+          rescue
+            puts "deliver aborted for #{user.email}.."
+          end
         end
       end
     end
   end
 
-  desc "Notify users of finished orders"
-  task :notify_order_finished => :environment do
-    order = Order.find(ENV["ORDER_ID"])
-    for group_order in order.group_orders
-      for user in group_order.ordergroup.users
-        Mailer.deliver_order_result(user, group_order) if user.settings["notify.orderFinished"] == '1'
+  desc "Create upcoming workgroups tasks (next 3 to 7 weeks)"
+  task :create_upcoming_weekly_tasks => :environment do
+    workgroups = Workgroup.all :conditions => {:weekly_task => true}
+    for workgroup in workgroups
+      puts "Create weekly tasks for #{workgroup.name}"
+      workgroup.next_weekly_tasks(8)[3..5].each do |date|
+        unless workgroup.tasks.exists?({:due_date => date, :weekly => true})
+          workgroup.tasks.create(workgroup.task_attributes(date))
+        end
       end
     end
+  end
+
+  desc "Notify workgroup of upcoming weekly task"
+  task :notify_users_of_weekly_task => :environment do
+    for workgroup in Workgroup.all
+      for task in workgroup.tasks.all(:conditions => ["due_date = ?", 7.days.from_now.to_date])
+        unless task.enough_users_assigned?
+          puts "Notify workgroup: #{workgroup.name} for task #{task.name}"
+          for user in workgroup.users
+            if user.settings['messages.sendAsEmail'] == "1" && !user.email.blank?
+              begin
+                Mailer.deliver_not_enough_users_assigned(task, user)
+              rescue
+                puts "deliver aborted for #{user.email}"
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  desc "finished order tasks, cleanup, notifications, stats ..."
+  task :finished_order_tasks => :environment do
+    puts "Start: #{Time.now}"
+    order = Order.find(ENV["ORDER_ID"])
+
+    # Update GroupOrder prices
+    order.group_orders.each { |go| go.update_price! }
+
+    # Clean up
+    # Delete no longer required order-history (group_order_article_quantities) and
+    # TODO: Do we need articles, which aren't ordered? (units_to_order == 0 ?)
+    order.order_articles.each do |oa|
+      oa.group_order_articles.each { |goa| goa.group_order_article_quantities.clear }
+    end
+
+    # Notifications
+    for group_order in order.group_orders
+      for user in group_order.ordergroup.users
+        begin
+          Mailer.deliver_order_result(user, group_order) if user.settings["notify.orderFinished"] == '1'
+        rescue
+          puts "deliver aborted for #{user.email}.."
+        end
+      end
+    end
+
+    # Stats
+    order.ordergroups.each { |o| o.update_stats! }
+
+    puts "End: #{Time.now}"
   end
 end

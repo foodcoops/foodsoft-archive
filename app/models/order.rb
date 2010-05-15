@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090317175355
 #
 # Table name: orders
 #
@@ -52,14 +51,14 @@ class Order < ActiveRecord::Base
   end
 
   def articles_for_ordering
-     if stockit?
-       StockArticle.available.without_deleted(:include => :article_category,
-         :order => 'article_categories.name, articles.name').reject{ |a|
-         a.quantity_available == 0
-         }.group_by { |a| a.article_category.name }
-     else
-       supplier.articles.available.without_deleted.group_by { |a| a.article_category.name }
-     end
+    if stockit?
+      StockArticle.available.without_deleted(:include => :article_category,
+        :order => 'article_categories.name, articles.name').reject{ |a|
+        a.quantity_available <= 0
+      }.group_by { |a| a.article_category.name }
+    else
+      supplier.articles.available.without_deleted.group_by { |a| a.article_category.name }
+    end
   end
 
   # Fetch last orders from same supplier, to generate an article selection proposal
@@ -175,16 +174,6 @@ class Order < ActiveRecord::Base
 
         # set new order state (needed by notify_order_finished)
         update_attributes(:state => 'finished', :ends => Time.now, :updated_by => user)
-
-        # Update GroupOrder prices
-        group_orders.each { |go| go.update_price! }
-        
-        # Clean up
-        # Delete no longer required order-history (group_order_article_quantities) and
-        # TODO: Do we need articles, which aren't ordered? (units_to_order == 0 ?)
-        order_articles.each do |oa|
-          oa.group_order_articles.each { |goa| goa.group_order_article_quantities.clear }
-        end
       end
     end
   end
@@ -217,7 +206,7 @@ class Order < ActiveRecord::Base
   protected
 
   def starts_before_ends
-     errors.add(:ends, "muss nach dem Bestellstart liegen (oder leer bleiben)") if (ends && starts && ends <= starts)
+    errors.add(:ends, "muss nach dem Bestellstart liegen (oder leer bleiben)") if (ends && starts && ends <= starts)
   end
 
   def include_articles

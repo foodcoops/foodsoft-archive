@@ -1,4 +1,4 @@
-%h1 Startseite
+%h1= t('.title')
 
 #start_nav
   = render :partial => 'start_nav'
@@ -24,12 +24,19 @@
         = link_to "Aufgaben übernehmen/ablehnen", my_tasks_path
       - unless @unassigned_tasks_number == 0
         %h3 Offene Aufgaben
-        = "Es gibt #{@unassigned_tasks_number} #{link_to 'offene Aufage(n)', :controller => 'tasks'}"
+        = "Es gibt #{@unassigned_tasks_number} #{link_to 'offene Aufgabe(n)', :controller => 'tasks'}"
       %p{:style => "clear:both"}= link_to "Meine Aufgaben", my_tasks_path
 
   - if @ordergroup
     // Current orders
     = render :partial => 'shared/open_orders'
+
+  // Stats
+  - if @ordergroup
+    .box_title
+      %h2 Engagement Deiner Bestellgruppe
+    .column_content
+      = render "stats"
 
   - unless @messages.empty?
     .box_title
@@ -49,9 +56,9 @@
         |
         Verfügbares Guthaben:
         = number_to_currency(@ordergroup.get_available_funds())
-        %span{:style => "color:grey"}
-          (zuletzt aktualisiert vor
-          = distance_of_time_in_words(Time.now, @ordergroup.account_updated) + "(n))"
+        %span.description
+          (Letzte Aktualisierung ist
+          = distance_of_time_in_words(Time.now, @ordergroup.account_updated) + " her)"
         %h3 Letzte Transaktionen
         %table
           %tr

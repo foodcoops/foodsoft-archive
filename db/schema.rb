@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090405131156) do
+ActiveRecord::Schema.define(:version => 20090907120012) do
 
   create_table "article_categories", :force => true do |t|
     t.string "name",        :default => "", :null => false
@@ -26,6 +26,8 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.integer  "unit_quantity"
     t.datetime "created_at"
   end
+
+  add_index "article_prices", ["article_id"], :name => "index_article_prices_on_article_id"
 
   create_table "articles", :force => true do |t|
     t.string   "name",                                              :default => "",   :null => false
@@ -49,7 +51,10 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.integer  "quantity",                                          :default => 0
   end
 
+  add_index "articles", ["article_category_id"], :name => "index_articles_on_article_category_id"
   add_index "articles", ["name", "supplier_id"], :name => "index_articles_on_name_and_supplier_id"
+  add_index "articles", ["supplier_id"], :name => "index_articles_on_supplier_id"
+  add_index "articles", ["type"], :name => "index_articles_on_type"
 
   create_table "assignments", :force => true do |t|
     t.integer "user_id",  :default => 0,     :null => false
@@ -75,7 +80,10 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.integer  "supplier_id"
     t.date     "delivered_on"
     t.datetime "created_at"
+    t.text     "note"
   end
+
+  add_index "deliveries", ["supplier_id"], :name => "index_deliveries_on_supplier_id"
 
   create_table "financial_transactions", :force => true do |t|
     t.integer  "ordergroup_id",                               :default => 0,   :null => false
@@ -85,12 +93,16 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.datetime "created_on",                                                   :null => false
   end
 
+  add_index "financial_transactions", ["ordergroup_id"], :name => "index_financial_transactions_on_ordergroup_id"
+
   create_table "group_order_article_quantities", :force => true do |t|
     t.integer  "group_order_article_id", :default => 0, :null => false
     t.integer  "quantity",               :default => 0
     t.integer  "tolerance",              :default => 0
     t.datetime "created_on",                            :null => false
   end
+
+  add_index "group_order_article_quantities", ["group_order_article_id"], :name => "index_group_order_article_quantities_on_group_order_article_id"
 
   create_table "group_order_articles", :force => true do |t|
     t.integer  "group_order_id",                                 :default => 0, :null => false
@@ -112,7 +124,9 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.integer  "updated_by_user_id"
   end
 
+  add_index "group_orders", ["order_id"], :name => "index_group_orders_on_order_id"
   add_index "group_orders", ["ordergroup_id", "order_id"], :name => "index_group_orders_on_ordergroup_id_and_order_id", :unique => true
+  add_index "group_orders", ["ordergroup_id"], :name => "index_group_orders_on_ordergroup_id"
 
   create_table "groups", :force => true do |t|
     t.string   "type",                                              :default => "",    :null => false
@@ -135,6 +149,7 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.string   "contact_person"
     t.string   "contact_phone"
     t.string   "contact_address"
+    t.text     "stats"
   end
 
   add_index "groups", ["name"], :name => "index_groups_on_name", :unique => true
@@ -164,6 +179,9 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.datetime "updated_at"
   end
 
+  add_index "invoices", ["delivery_id"], :name => "index_invoices_on_delivery_id"
+  add_index "invoices", ["supplier_id"], :name => "index_invoices_on_supplier_id"
+
   create_table "memberships", :force => true do |t|
     t.integer "group_id", :default => 0, :null => false
     t.integer "user_id",  :default => 0, :null => false
@@ -192,6 +210,7 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
   end
 
   add_index "order_articles", ["order_id", "article_id"], :name => "index_order_articles_on_order_id_and_article_id", :unique => true
+  add_index "order_articles", ["order_id"], :name => "index_order_articles_on_order_id"
 
   create_table "order_comments", :force => true do |t|
     t.integer  "order_id"
@@ -199,6 +218,8 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.text     "text"
     t.datetime "created_at"
   end
+
+  add_index "order_comments", ["order_id"], :name => "index_order_comments_on_order_id"
 
   create_table "orders", :force => true do |t|
     t.integer  "supplier_id"
@@ -210,6 +231,35 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.integer  "updated_by_user_id"
     t.decimal  "foodcoop_result",    :precision => 8, :scale => 2
   end
+
+  add_index "orders", ["state"], :name => "index_orders_on_state"
+
+  create_table "page_versions", :force => true do |t|
+    t.integer  "page_id"
+    t.integer  "lock_version"
+    t.text     "body"
+    t.integer  "updated_by"
+    t.integer  "redirect"
+    t.integer  "parent_id"
+    t.datetime "updated_at"
+  end
+
+  add_index "page_versions", ["page_id"], :name => "index_page_versions_on_page_id"
+
+  create_table "pages", :force => true do |t|
+    t.string   "title"
+    t.text     "body"
+    t.string   "permalink"
+    t.integer  "lock_version", :default => 0
+    t.integer  "updated_by"
+    t.integer  "redirect"
+    t.integer  "parent_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "pages", ["permalink"], :name => "index_pages_on_permalink"
+  add_index "pages", ["title"], :name => "index_pages_on_title"
 
   create_table "schema_info", :id => false, :force => true do |t|
     t.integer "version"
@@ -223,6 +273,10 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.datetime "created_at"
     t.integer  "stock_taking_id"
   end
+
+  add_index "stock_changes", ["delivery_id"], :name => "index_stock_changes_on_delivery_id"
+  add_index "stock_changes", ["stock_article_id"], :name => "index_stock_changes_on_stock_article_id"
+  add_index "stock_changes", ["stock_taking_id"], :name => "index_stock_changes_on_stock_taking_id"
 
   create_table "stock_takings", :force => true do |t|
     t.date     "date"
@@ -260,10 +314,12 @@ ActiveRecord::Schema.define(:version => 20090405131156) do
     t.datetime "created_on",                        :null => false
     t.datetime "updated_on",                        :null => false
     t.integer  "required_users", :default => 1
+    t.boolean  "weekly"
   end
 
   add_index "tasks", ["due_date"], :name => "index_tasks_on_due_date"
   add_index "tasks", ["name"], :name => "index_tasks_on_name"
+  add_index "tasks", ["workgroup_id"], :name => "index_tasks_on_workgroup_id"
 
   create_table "users", :force => true do |t|
     t.string   "nick",                   :default => "", :null => false

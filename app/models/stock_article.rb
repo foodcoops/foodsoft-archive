@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090120184410
 #
 # Table name: articles
 #
@@ -49,9 +48,18 @@ class StockArticle < Article
     available
   end
 
+  def self.stock_value
+    available.collect { |a| a.quantity * a.gross_price }.sum
+  end
+
   protected
 
   def check_quantity
     raise "#{name} kann nicht gelöscht werden. Der Lagerbestand ist nicht null." unless quantity == 0
+  end
+
+  # Overwrite Price history of Article. For StockArticles isn't it necessary.
+  def update_price_history
+    true
   end
 end

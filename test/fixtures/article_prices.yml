@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090119155930
 #
 # Table name: article_prices
 #

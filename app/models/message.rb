@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090119155930
 #
 # Table name: messages
 #
@@ -66,7 +65,7 @@ class Message < ActiveRecord::Base
   end
 
   def sender_name
-    system_message? ? 'Foodsoft' : sender.nick
+    system_message? ? 'Foodsoft' : sender.nick rescue "??"
   end
 
   def recipients

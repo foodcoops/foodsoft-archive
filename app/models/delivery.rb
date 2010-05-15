@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090119155930
 #
 # Table name: deliveries
 #
@@ -19,7 +18,9 @@ class Delivery < ActiveRecord::Base
 
   validates_presence_of :supplier_id
 
-  def stock_change_attributes=(stock_change_attributes)
+  accepts_nested_attributes_for :stock_changes, :allow_destroy => :true
+
+  def new_stock_changes=(stock_change_attributes)
     for attributes in stock_change_attributes
       stock_changes.build(attributes) unless attributes[:quantity].to_i == 0
     end

@@ -12,15 +12,7 @@ class TasksController < ApplicationController
   end
   
   def new
-    if params[:id]
-      group = Group.find(params[:id])
-      @task = group.tasks.build :name => group.task_name,
-                                :required_users => group.task_required_users,
-                                :description => group.task_description,
-                                :due_date => group.next_weekly_tasks[params[:task_from_now].to_i]
-    else
-      @task = Task.new
-    end
+    @task = Task.new
   end
   
   def create

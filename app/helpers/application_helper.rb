@@ -12,6 +12,10 @@ module ApplicationHelper
   def format_datetime(time = Time.now)
     I18n.l(time) unless time.nil?
   end
+
+  def format_datetime_timespec(time, format)
+    I18n.l(time, :format => format) unless (time.nil? or format.nil?)
+  end
   
   # Creates ajax-controlled-links for pagination
   # see also the plugin "will_paginate"
@@ -103,8 +107,13 @@ module ApplicationHelper
   end
   
   # to set a title for both the h1-tag and the title in the header
-  def title(page_title)
-    content_for(:title) { page_title }
+  def title(page_title, show_title = true)
+    @content_for_title = page_title.to_s
+    @show_title = show_title
+  end
+
+  def show_title?
+    @show_title
   end
 
   def tab_is_active?(tab)
@@ -114,8 +123,9 @@ module ApplicationHelper
   def icon(name, options={})
     icons = { :delete => { :file => 'b_drop.png', :alt => 'Löschen'},
               :edit   => { :file => 'b_edit.png', :alt => 'Bearbeiten'}}
+    options[:alt] ||= icons[name][:alt]
+    options[:title] ||= icons[name][:title]
     options.merge!({:size => '16x16',:border => "0"})
-    options.merge!({:alt => icons[name][:alt], :title => icons[name][:alt]}) unless options[:alt]
     
     image_tag icons[name][:file], options
   end

@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090120184410
 #
 # Table name: group_order_articles
 #
@@ -9,7 +8,7 @@
 #  quantity         :integer         default(0), not null
 #  tolerance        :integer         default(0), not null
 #  updated_on       :datetime        not null
-#  result           :integer
+#  result           :decimal(, )
 #
 
 # A GroupOrderArticle stores the sum of how many items of an OrderArticle are ordered as part of a GroupOrder.

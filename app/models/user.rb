@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090120184410
 #
 # Table name: users
 #
@@ -29,15 +28,16 @@ class User < ActiveRecord::Base
   has_many :assignments, :dependent => :destroy
   has_many :tasks, :through => :assignments
   has_many :send_messages, :class_name => "Message", :foreign_key => "sender_id"
+  has_many :pages, :foreign_key => 'updated_by'
   
   attr_accessor :password, :setting_attributes
 
   validates_presence_of :nick, :email
   validates_presence_of :password_hash, :message => "Password is required."
   validates_length_of :nick, :in => 2..25
-  validates_uniqueness_of :nick
+  validates_uniqueness_of :nick, :case_sensitive => false
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i
-  validates_uniqueness_of :email	
+  validates_uniqueness_of :email, :case_sensitive => false
   validates_length_of :first_name, :in => 2..50
   validates_confirmation_of :password
   validates_length_of :password, :in => 5..25, :allow_blank => true

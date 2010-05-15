@@ -4,16 +4,24 @@
       { :name => "Start", :url => root_path, :active => ["index", "home"],
         :subnav => [
           { :name => "Meine Aufgaben", :url => "/home/tasks" },
-          { :name => "Meine Bestellgruppe", :url => "/home/ordergroup"},
+          { :name => "Meine Bestellgruppe", :url => "/home/ordergroup", :access_denied? => (!u.ordergroup)},
           { :name => "Mein Profil", :url => "/home/profile"}
         ]
       },
-      { :name => "Foodcoop", :url => "/foodcoop/members", :active => ["foodcoop", "tasks", "messages"],
+      { :name => "Foodcoop", :url => "/tasks", 
+        :active => ["foodcoop", "tasks", "messages", "foodcoop/ordergroups", "foodcoop/workgroups", "foodcoop/users"],
         :subnav => [
-          { :name => "Mitglieder", :url => "/foodcoop/members"},
+          { :name => "Mitglieder", :url => "/foodcoop/users"},
           { :name => "Abeitsgruppen", :url => "/foodcoop/workgroups"},
+          { :name => "Bestellgruppen", :url => "/foodcoop/ordergroups"},
           { :name => "Nachrichten", :url => "/messages"},
           { :name => "Aufgaben", :url => "/tasks"}
+        ]
+      },
+      { :name => "Wiki", :url => "/wiki", :active => ["pages", "wiki"],
+        :subnav => [
+          { :name => "Startseite", :url => "/wiki" },
+          { :name => "Alle Seiten", :url => "/pages/all" }
         ]
       },
       { :name => "Bestellungen", :url => u.ordergroup ? "/ordering/" : "/orders",

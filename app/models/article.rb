@@ -1,5 +1,4 @@
 # == Schema Information
-# Schema version: 20090120184410
 #
 # Table name: articles
 #
@@ -32,7 +31,7 @@ class Article < ActiveRecord::Base
   # Associations
   belongs_to :supplier
   belongs_to :article_category
-  has_many :article_prices, :order => "created_at"
+  has_many :article_prices, :order => "created_at DESC"
 
   named_scope :available, :conditions => {:availability => true}
   named_scope :not_in_stock, :conditions => {:type => nil}
@@ -41,8 +40,9 @@ class Article < ActiveRecord::Base
   validates_presence_of :name, :unit, :price, :tax, :deposit, :unit_quantity, :supplier_id, :article_category_id
   validates_length_of :name, :in => 4..60
   validates_length_of :unit, :in => 2..15
-  validates_numericality_of :price, :greater_than => 0
+  validates_numericality_of :price, :unit_quantity, :greater_than => 0
   validates_numericality_of :deposit, :tax
+  validates_uniqueness_of :name, :scope => [:supplier_id, :deleted_at, :type]
   
   # Callbacks
   before_save :update_price_history
