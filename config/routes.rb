@@ -18,7 +18,7 @@ ActionController::Routing::Routes.draw do |map|
   map.wiki "/wiki", :controller => 'pages', :action => 'show', :permalink => 'Home'
 
   # Orders, ordering
-  map.resources :orders, :member => { :finish => :post, :add_comment => :post }
+  map.resources :orders, :member => { :finish => :post, :close => :post, :add_comment => :post }
   map.with_options :controller => "ordering" do |ordering|
     ordering.ordering "/ordering", :action => "index"
     ordering.my_orders "/ordering/myOrders", :action => "myOrders"

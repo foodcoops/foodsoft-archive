@@ -25,7 +25,7 @@ class GroupOrder < ActiveRecord::Base
   validates_numericality_of :price
   validates_uniqueness_of :ordergroup_id, :scope => :order_id   # order groups can only order once per order
 
-  named_scope :open, lambda { {:conditions => ["order_id IN (?)", Order.started.collect(&:id)]} }
+  named_scope :started, lambda { {:conditions => ["order_id IN (?)", Order.started.collect(&:id)]} }
   named_scope :finished_or_closed, lambda { {:conditions => ["order_id IN (?)", Order.finished_or_closed.collect(&:id)]} }
   
   # Updates the "price" attribute.

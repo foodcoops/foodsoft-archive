@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090907120012) do
+ActiveRecord::Schema.define(:version => 20100819113157) do
 
   create_table "article_categories", :force => true do |t|
     t.string "name",        :default => "", :null => false
@@ -226,8 +226,8 @@ ActiveRecord::Schema.define(:version => 20090907120012) do
     t.text     "note"
     t.datetime "starts"
     t.datetime "ends"
-    t.string   "state",                                            :default => "open"
-    t.integer  "lock_version",                                     :default => 0,      :null => false
+    t.string   "state",                                            :default => "started"
+    t.integer  "lock_version",                                     :default => 0,         :null => false
     t.integer  "updated_by_user_id"
     t.decimal  "foodcoop_result",    :precision => 8, :scale => 2
   end
@@ -260,10 +260,6 @@ ActiveRecord::Schema.define(:version => 20090907120012) do
 
   add_index "pages", ["permalink"], :name => "index_pages_on_permalink"
   add_index "pages", ["title"], :name => "index_pages_on_title"
-
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version"
-  end
 
   create_table "stock_changes", :force => true do |t|
     t.integer  "delivery_id"

@@ -11,9 +11,13 @@
   .box_title
     %h2 Zusammenfassung
   .column_content
-    - if @order.finished? and !@order.closed?
-      %p
-        %b{:style => "color:red"} Bestellung wurde noch nicht abgerechnet.
+    %p
+      %b{:style => "color:red"}
+        - if @order.finished?
+          Bestellung wurde noch nicht abgeschlossen.
+          = link_to "Bestellung jetzt abschließen", close_order_path(@order), :method => :post, :confirm => "Achtung, Änderungen sind dann nicht mehr möglich?"
+        - if @order.closed?
+          Bestellung wurde noch nicht abgerechnet.
     %p
       Lieferantin:
       %b=h @order.name
@@ -47,11 +51,14 @@
         |
         = link_to 'Beenden!', finish_order_path(@order), :method => :post, :confirm => "Willst Du wirklich die Bestellung beenden?\nEs gibt kein zurück.."
         |
-      - unless @order.closed?
+      - if @order.finished?
+        = link_to "Schließen", close_order_path(@order), :method => :post, :confirm => "Willst Du wirklih die Bestellung schließen?"
+        |
+      - unless @order.balanced?
         = link_to "Löschen", @order, :confirm => "Willst du wirklich die Bestellung löschen?", :method => :delete
         
     
-    - unless @order.started?
+    - if @order.closed? or @order.balanced?
       %p
         = update_articles_link(@order, "Artikelübersicht", :normal)
         |
@@ -74,7 +81,10 @@
   .box_title
     %h2 Artikel
   .column_content#articles
-    = render :partial => 'articles', :locals => { :order => @order }
+    - if @order.finished?
+      = render :partial => 'order_to_stock', :locals => { :order => @order }
+    - else
+      = render :partial => 'articles', :locals => { :order => @order }
 
 .single_column{:style => "width:70em;"}
   .box_title

@@ -165,7 +165,7 @@ class GroupOrderArticle < ActiveRecord::Base
     self[:result] || calculate_result[type]
   end
 
-  # This is used during order.finish!.
+  # This is used during order.close!.
   def save_results!
     self.update_attribute(:result, calculate_result[:total])
   end

@@ -33,11 +33,11 @@
           Gesamtsumme:
           %b= number_to_currency(@ordergroup.value_of_not_balanced_orders)
 
-  // closed orders
-  - unless Orders.balanced.empty?
+  // balanced orders
+  - unless Order.balanced.empty?
     .box_title
       %h2 Abgerechnete Bestellungen
     .column_content
-      = render :partial => "orders", :locals => {:orders => Orders.balanced.all(:limit => 5), :pagination => false}
+      = render :partial => "orders", :locals => {:orders => Order.balanced.all(:limit => 5), :pagination => false}
       %br/
       = link_to "mehr...", :action => "myOrders"

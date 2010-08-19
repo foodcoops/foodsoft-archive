@@ -76,8 +76,8 @@ namespace :foodsoft do
     end
   end
 
-  desc "finished order tasks, cleanup, notifications, stats ..."
-  task :finished_order_tasks => :environment do
+  desc "close order, cleanup, notifications, stats ..."
+  task :close_order => :environment do
     puts "Start: #{Time.now}"
     order = Order.find(ENV["ORDER_ID"])
 

@@ -171,10 +171,19 @@ class Order < ActiveRecord::Base
     total
   end
 
-  # Finishes this order. This will set the order state to "finish" and the end property to the current time.
-  # Ignored if the order is already finished.
-  def finish!(user)
+  # Stops a started order. Ordergroups cannot change their ordered articles any more.
+  # Sets state to 'finished'
+  def finish!(current_user)
     unless finished?
+      update_attributes(:state => 'finished', :ends => Time.now, :updated_by => current_user)
+      # TODO: Avoid heavy callback (update ordergroup prices)
+    end
+  end
+
+  # Closes this order. This will set the order state to "close" and the end property to the current time.
+  # Ignored if the order is already closed.
+  def close!(current_user)
+    unless closed?
       Order.transaction do
         # Update order_articles. Save the current article_price to keep price consistency
         # Also save results for each group_order_result
@@ -184,14 +193,14 @@ class Order < ActiveRecord::Base
         end
 
         # set new order state (needed by notify_order_finished)
-        update_attributes(:state => 'finished', :ends => Time.now, :updated_by => user)
+        update_attributes(:state => 'closed', :updated_by => current_user)
       end
     end
   end
   
-  # Sets order.status to 'close' and updates all Ordergroup.account_balances
-  def close!(user)
-    raise "Bestellung wurde schon abgerechnet" if closed?
+  # Sets order.status to 'balanced' and updates all Ordergroup.account_balances
+  def balance!(user)
+    raise "Bestellung wurde schon abgerechnet" if balanced?
     transaction_note = "Bestellung: #{name}, bis #{ends.strftime('%d.%m.%Y')}"
 
     gos = group_orders.all(:include => :ordergroup)       # Fetch group_orders
@@ -210,7 +219,7 @@ class Order < ActiveRecord::Base
         end
       end
 
-      self.update_attributes! :state => 'closed', :updated_by => user, :foodcoop_result => profit
+      self.update_attributes! :state => 'balanced', :updated_by => user, :foodcoop_result => profit
     end
   end
 

@@ -290,7 +290,7 @@ class Finance::BalancingController < ApplicationController
   def close
     @order = Order.find(params[:id])
     begin
-      @order.close!(@current_user)
+      @order.balance!(@current_user)
       flash[:notice] = "Bestellung wurde erfolgreich abgerechnet, die Kontostände aktualisiert."
       redirect_to :action => "index"
     rescue => e
