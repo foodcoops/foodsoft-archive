@@ -6,7 +6,7 @@ class TasksController < ApplicationController
     @groups = Workgroup.all
   end
   
-  def myTasks
+  def user
     @unaccepted_tasks = @current_user.unaccepted_tasks
     @accepted_tasks = @current_user.accepted_tasks
   end
@@ -56,6 +56,7 @@ class TasksController < ApplicationController
   
   def destroy
     Task.find(params[:id]).destroy
+    flash[:notice] = "Aufgabe wurde gelöscht"
     redirect_to :action => "index"
   end
   
@@ -78,7 +79,7 @@ class TasksController < ApplicationController
       task.assignments.create(:user => current_user, :accepted => true)
     end
     flash[:notice] = "Du hast die Aufgabe übernommen"
-    redirect_to my_tasks_path
+    redirect_to user_tasks_path
   end
   
   # deletes assignment between current_user and given task

@@ -27,7 +27,7 @@
           - for version in @page.versions.reverse
             %li
               = link_to I18n.l(version.updated_at, :format => "%d.%m.%y %H:%M"), version_page_path(@page, :version => version.lock_version)
-              = "(#{User.find(version.updated_by).nick})"
+              = "(#{User.find_by_id(version.updated_by).try(:nick)})"
 
     - unless @page.children.empty?
       #subpages{:style => "display:none"}
@@ -47,5 +47,5 @@
     = link_to "Seite löschen", @page, :method => :delete, :confirm => "Achtung, auch alle Unterseiten werden gelöscht. Bist Du sicher?"
     | Zuletzt bearbeitet von
     %b
-      = "#{@page.user.nick}"
+      = "#{@page.user.try(:nick)}"
     = "am #{format_datetime @page.updated_at}"
