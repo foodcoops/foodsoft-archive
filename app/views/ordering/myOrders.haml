@@ -7,7 +7,7 @@
   .box_title
     %h2 beendet/nicht abgerechnet
   .column_content
-    = render :partial => "orders", :locals => {:orders => Order.finished_not_closed, :pagination => false}
+    = render :partial => "orders", :locals => {:orders => Order.closed, :pagination => false}
     
 .single_column{:style => "width:50em"}
   .box_title

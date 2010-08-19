@@ -1,7 +1,7 @@
 .box_title
   %h2 Laufende Bestellungen
 .column_content
-  - unless Order.open.empty?
+  - unless Order.started.empty?
     %table.list
       %thead
         %tr
@@ -11,7 +11,7 @@
           %th Summe
       %tbody
         - total = 0
-        - Order.open.each do |order|
+        - Order.started.each do |order|
           %tr{:class => cycle('even', 'odd', :name => 'open_orders')}
             %td= link_to h(order.name), :controller => 'ordering', :action => 'order', :id => order
             %td=h format_time(order.ends) unless order.ends.nil?

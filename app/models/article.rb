@@ -80,7 +80,7 @@ class Article < ActiveRecord::Base
   
   # If the article is used in an open Order, the Order will be returned.
   def in_open_order
-    order_articles = OrderArticle.all(:conditions => ['order_id IN (?)', Order.open.collect(&:id)])
+    order_articles = OrderArticle.all(:conditions => ['order_id IN (?)', Order.started.collect(&:id)])
     order_article = order_articles.detect {|oa| oa.article_id == id }
     order_article ? order_article.order : nil
   end

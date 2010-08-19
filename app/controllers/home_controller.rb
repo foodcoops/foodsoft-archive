@@ -2,7 +2,7 @@ class HomeController < ApplicationController
   helper :messages
   
   def index
-    @currentOrders = Order.open
+    @currentOrders = Order.started
     @ordergroup = @current_user.ordergroup
     # unaccepted tasks
     @unaccepted_tasks = @current_user.unaccepted_tasks

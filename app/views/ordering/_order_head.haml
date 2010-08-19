@@ -34,7 +34,7 @@
             %b Gesamtbestellmenge bisher:
             = number_to_currency @order.sum
 
-- orders = Order.open.reject{ |order| order == @order }
+- orders = Order.started.reject{ |order| order == @order }
 - unless orders.empty?
   .right_column{:style => "width:22em"}
     .box_title

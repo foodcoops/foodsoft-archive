@@ -50,18 +50,18 @@ class Ordergroup < Group
     User.all(:order => 'nick').reject { |u| (users.include?(u) || u.ordergroup) }
   end
 
-  def value_of_open_orders(exclude = nil)
-    group_orders.open.reject{|go| go == exclude}.collect(&:price).sum
+  def value_of_started_orders(exclude = nil)
+    group_orders.started.reject{|go| go == exclude}.collect(&:price).sum
   end
   
-  def value_of_finished_orders(exclude = nil)
-    group_orders.finished.reject{|go| go == exclude}.collect(&:price).sum
+  def value_of_not_balanced_orders(exclude = nil)
+    group_orders.finished_or_closed.reject{|go| go == exclude}.collect(&:price).sum
   end
 
   # Returns the available funds for this order group (the account_balance minus price of all non-closed GroupOrders of this group).
   # * exclude (GroupOrder): exclude this GroupOrder from the calculation
   def get_available_funds(exclude = nil)
-    account_balance - value_of_open_orders(exclude) - value_of_finished_orders(exclude)
+    account_balance - value_of_started_orders(exclude) - value_of_not_balanced_orders(exclude)
   end
   memoize :get_available_funds
 

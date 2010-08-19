@@ -52,7 +52,7 @@
     %h2 Laufende Bestellungen
   .column_content
     %table
-      - for order in Order.open
+      - for order in Order.started
         %tr
           %td= link_to order.name, :action => 'order', :id => order
           %td= "("+ time_ago_in_words(order.ends) + ")" if order.ends
@@ -64,7 +64,7 @@
   .column_content#result
     - if @group_order
       %p(style="float:right")= link_to_function "Zeige/Verstecke nicht bestellte Artikel", "toggleIgnoredArticles();"
-      %p= link_to("Bestellung ändern", :action => "order", :id => @order) if @order.open?
+      %p= link_to("Bestellung ändern", :action => "order", :id => @order) if @order.started?
       %table.list
         %thead
           %tr
@@ -75,7 +75,7 @@
               %abbr{:title => "Menge + Toleranz"} Bestellt
             %th
               %abbr{:title => "Unter Berücksichtigung der derzeitigen Bestellungen aller Gruppen"}
-                - if @order.open?
+                - if @order.started?
                   Zu
                 Erhalten
             %th Gesamtpreis
@@ -92,7 +92,7 @@
                 - quantity = goa.quantity
                 - tolerance = goa.tolerance
                 - result = goa.result
-                - if @order.open?
+                - if @order.started?
                   - if Foodsoft.config[:tolerance_is_costly]
                     - sub_total = oa.price.fc_price * (quantity + tolerance)
                   - else
@@ -127,7 +127,7 @@
       %br/
       = link_to_top
     - else
-      - if @order.open?
+      - if @order.started?
         Du hast noch nicht bestellt.
         = link_to "Das ist Deine Chance!", :action => "order", :id => @order
       - else

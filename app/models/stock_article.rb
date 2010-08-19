@@ -25,7 +25,7 @@
 #
 
 class StockArticle < Article
-  has_many :stock_changes
+  has_many :stock_changes # TODO: also delete stock changes!
 
   named_scope :available, :conditions => "quantity > 0"
 

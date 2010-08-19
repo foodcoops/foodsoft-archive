@@ -4,12 +4,12 @@ class Finance::BalancingController < ApplicationController
   
   def index
     @financial_transactions = FinancialTransaction.find(:all, :order => "created_on DESC", :limit => 8)
-    @orders = Order.finished_not_closed
+    @orders = Order.closed
     @unpaid_invoices = Invoice.unpaid
   end
 
   def list
-    @orders = Order.finished.paginate :page => params[:page], :per_page => 10, :order => 'ends DESC'
+    @orders = Order.closed_or_balanced.paginate :page => params[:page], :per_page => 10, :order => 'ends DESC'
   end
 
   def new

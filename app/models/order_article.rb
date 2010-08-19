@@ -41,7 +41,7 @@ class OrderArticle < ActiveRecord::Base
 
   # Update quantity/tolerance/units_to_order from group_order_articles
   def update_results!
-    if order.open?
+    if order.started?
       quantity = group_order_articles.collect(&:quantity).sum
       tolerance = group_order_articles.collect(&:tolerance).sum
       update_attributes(:quantity => quantity, :tolerance => tolerance,

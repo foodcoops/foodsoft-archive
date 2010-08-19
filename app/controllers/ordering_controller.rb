@@ -200,7 +200,7 @@ class OrderingController < ApplicationController
 
   def ensure_open_order
     @order = Order.find(params[:id], :include => [:supplier, :order_articles])
-    unless @order.open?
+    unless @order.started?
       flash[:notice] = 'Diese Bestellung ist bereits abgeschlossen.'
       redirect_to :action => 'index'
     end

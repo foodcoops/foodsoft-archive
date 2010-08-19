@@ -36,10 +36,13 @@ class Order < ActiveRecord::Base
   after_update :update_price_of_group_orders
  
   # Finders
-  named_scope :open, :conditions => {:state => 'open'}, :order => 'ends DESC'
-  named_scope :finished, :conditions => "state = 'finished' OR state = 'closed'", :order => 'ends DESC'
-  named_scope :finished_not_closed, :conditions => {:state => 'finished'}, :order => 'ends DESC'
+  named_scope :started, :conditions => {:state => 'started'}, :order => 'ends DESC'
+  named_scope :finished, :conditions => {:state => 'finished'}, :order => 'ends DESC'
+  named_scope :not_running, :conditions => "state IS NOT 'started'", :order => 'ends DESC'
   named_scope :closed, :conditions => {:state => 'closed'}, :order => 'ends DESC'
+  named_scope :finished_or_closed, :conditions => "state = 'finished' OR state = 'closed'", :order => 'ends DESC'
+  named_scope :balanced, :conditions => {:state => 'balanced'}, :order => 'ends DESC'
+  named_scope :closed_or_balanced, :conditions => "state = 'closed' OR state = 'balanced'", :order => 'ends DESC'
   named_scope :stockit, :conditions => {:supplier_id => 0}, :order => 'ends DESC'
 
   def stockit?
@@ -82,8 +85,8 @@ class Order < ActiveRecord::Base
     end
   end
 
-  def open?
-    state == "open"
+  def started?
+    state == "started"
   end
 
   def finished?
@@ -92,6 +95,10 @@ class Order < ActiveRecord::Base
 
   def closed?
     state == "closed"
+  end
+
+  def balanced?
+    state == "balanced"
   end
 
   def expired?

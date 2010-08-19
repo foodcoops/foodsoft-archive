@@ -42,7 +42,7 @@
     
     %p
       Aktionen:
-      - if @order.open?
+      - if @order.started?
         = link_to "Bearbeiten", edit_order_path(@order)
         |
         = link_to 'Beenden!', finish_order_path(@order), :method => :post, :confirm => "Willst Du wirklich die Bestellung beenden?\nEs gibt kein zurück.."
@@ -51,7 +51,7 @@
         = link_to "Löschen", @order, :confirm => "Willst du wirklich die Bestellung löschen?", :method => :delete
         
     
-    - unless @order.open?
+    - unless @order.started?
       %p
         = update_articles_link(@order, "Artikelübersicht", :normal)
         |
