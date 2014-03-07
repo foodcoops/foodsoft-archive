@@ -24,6 +24,8 @@ gem 'gmaps4rails'
 gem 'underscore-rails'          # for gmaps4rails
 gem 'markerclustererplus-rails' # for gmaps4rails
 
+gem 'activeadmin', github: 'gregbell/active_admin'
+
 
 group :development do
   gem 'better_errors'
