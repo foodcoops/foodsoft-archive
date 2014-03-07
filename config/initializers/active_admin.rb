@@ -1,3 +1,5 @@
+require 'active_admin/views/index_as_map'
+
 ActiveAdmin.setup do |config|
 
   # == Site Title

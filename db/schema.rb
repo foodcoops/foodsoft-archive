@@ -11,7 +11,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140306213200) do
+ActiveRecord::Schema.define(version: 20140307094051) do
+
+  create_table "active_admin_comments", force: true do |t|
+    t.string   "namespace"
+    t.text     "body"
+    t.string   "resource_id",   null: false
+    t.string   "resource_type", null: false
+    t.integer  "author_id"
+    t.string   "author_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
+  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace"
+  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
+
+  create_table "activeadmin_settings_pictures", force: true do |t|
+    t.string   "data"
+    t.string   "data_file_size"
+    t.string   "data_content_type"
+    t.integer  "width"
+    t.integer  "height"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "activeadmin_settings_settings", force: true do |t|
+    t.string   "name"
+    t.string   "string"
+    t.string   "file"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "locale"
+  end
 
   create_table "roles", force: true do |t|
     t.string   "name"
@@ -23,6 +57,32 @@ ActiveRecord::Schema.define(version: 20140306213200) do
 
   add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
   add_index "roles", ["name"], name: "index_roles_on_name"
+
+  create_table "supplier_conditions", force: true do |t|
+    t.integer "supplier_id",                                null: false
+    t.decimal "min_order_net",      precision: 8, scale: 2
+    t.decimal "min_order_gross",    precision: 8, scale: 2
+    t.integer "min_order_articles"
+    t.decimal "fee_flat",           precision: 8, scale: 2
+    t.float   "fee_margin"
+  end
+
+  create_table "suppliers", force: true do |t|
+    t.string   "name",           null: false
+    t.string   "stype"
+    t.string   "email",          null: false
+    t.string   "address",        null: false
+    t.string   "latitude"
+    t.string   "longitude"
+    t.string   "phone",          null: false
+    t.string   "phone2"
+    t.string   "fax"
+    t.string   "url"
+    t.string   "vat_number"
+    t.string   "chamber_number"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
