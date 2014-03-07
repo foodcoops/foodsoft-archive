@@ -41,12 +41,34 @@ ActiveAdmin.register Supplier do
     end
   end
 
-  sidebar "Map", only: :show do
-    if supplier.latitude and supplier.longitude
-      div do
-        render 'shared/map', objects: [supplier], width: '243px', height: '243px', zoom: 9
-      end
+  sidebar "Map", only: :show, if: Proc.new {supplier.latitude and supplier.longitude} do
+    div do
+      render 'shared/map', objects: [supplier], width: '243px', height: '243px', zoom: 9
     end
+  end
+
+  sidebar "Logo", only: :show, if: Proc.new {supplier.logo} do
+    image_tag supplier.logo.url, width: '100%' if supplier.logo
+  end
+
+  form do |f|
+    f.inputs 'General' do
+      f.input :name
+      f.input :stype
+    end
+    f.inputs 'Contact' do
+      f.input :email
+      f.input :address
+      f.input :phone
+      f.input :phone2
+      f.input :fax
+      f.input :url
+      f.input :vat_number
+      f.input :chamber_number
+    end
+    f.inputs 'Artwork' do
+    end
+    f.actions
   end
 
 end

@@ -6,7 +6,7 @@ class Supplier < ActiveRecord::Base
 
   geocoded_by :address
   after_validation :geocode, :if => :address_changed?
-  
+
   #def articles_updated_at
   #  articles.order('articles.updated_on DESC').first.try(:updated_on)
   #end

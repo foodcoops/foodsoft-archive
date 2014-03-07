@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140307094051) do
+ActiveRecord::Schema.define(version: 20140307125414) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -46,6 +46,55 @@ ActiveRecord::Schema.define(version: 20140307094051) do
     t.datetime "updated_at"
     t.string   "locale"
   end
+
+  create_table "assets", force: true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.string   "tags"
+    t.integer  "user_id"
+    t.string   "content_type"
+    t.string   "upload_file"
+    t.string   "data"
+    t.boolean  "processed",     default: false
+    t.string   "aws_acl",       default: "public-read"
+    t.integer  "data_size"
+    t.integer  "height"
+    t.integer  "width"
+    t.text     "versions_info"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "assets", ["content_type"], name: "index_assets_on_content_type"
+  add_index "assets", ["user_id"], name: "index_assets_on_user_id"
+
+  create_table "attachments", force: true do |t|
+    t.integer "asset_id"
+    t.string  "attachable_type"
+    t.integer "attachable_id"
+    t.integer "position"
+    t.string  "box"
+  end
+
+  add_index "attachments", ["asset_id"], name: "index_attachments_on_asset_id"
+  add_index "attachments", ["attachable_id"], name: "index_attachments_on_attachable_id"
+  add_index "attachments", ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable_type_and_attachable_id"
+
+  create_table "delayed_jobs", force: true do |t|
+    t.integer  "priority",   default: 0, null: false
+    t.integer  "attempts",   default: 0, null: false
+    t.text     "handler",                null: false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
 
   create_table "roles", force: true do |t|
     t.string   "name"
