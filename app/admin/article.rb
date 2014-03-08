@@ -4,7 +4,7 @@ ActiveAdmin.register Article do
 
  
   filter :supplier, as: :select
-  #filter :article_category, :select
+  filter :article_category
   filter :name
   filter :order_number
   filter :price_price, as: :numeric, label: 'net price'

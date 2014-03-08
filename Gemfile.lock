@@ -16,6 +16,14 @@ GIT
       ransack (~> 1.0)
       sass-rails
 
+GIT
+  remote: git://github.com/wvengen/activeadmin-sortable-tree.git
+  revision: f60970e7d493799221a9336b59eb77d185aba37e
+  specs:
+    activeadmin-sortable-tree (0.0.1)
+      activeadmin
+      rails (>= 3.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -274,6 +282,7 @@ PLATFORMS
 
 DEPENDENCIES
   activeadmin!
+  activeadmin-sortable-tree!
   awesome_nested_set
   better_errors
   binding_of_caller

@@ -28,6 +28,7 @@ gem 'activeadmin', github: 'gregbell/active_admin'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'awesome_nested_set'
+gem 'activeadmin-sortable-tree', github: 'wvengen/activeadmin-sortable-tree'
 
 group :development do
   gem 'better_errors'
