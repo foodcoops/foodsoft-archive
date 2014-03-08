@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140307134044) do
+ActiveRecord::Schema.define(version: 20140307141645) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -45,6 +45,41 @@ ActiveRecord::Schema.define(version: 20140307134044) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "locale"
+  end
+
+  create_table "article_categories", force: true do |t|
+    t.string  "name",      null: false
+    t.string  "icon"
+    t.integer "parent_id"
+    t.integer "lft"
+    t.integer "rgt"
+    t.integer "depth"
+  end
+
+  create_table "article_prices", force: true do |t|
+    t.integer  "article_id",                                          null: false
+    t.string   "unit",                                                null: false
+    t.integer  "unit_quantity",                         default: 1,   null: false
+    t.decimal  "price",         precision: 8, scale: 2,               null: false
+    t.decimal  "deposit",       precision: 8, scale: 2, default: 0.0, null: false
+    t.decimal  "tax",           precision: 3, scale: 1,               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "articles", force: true do |t|
+    t.integer  "supplier_id",         null: false
+    t.string   "name",                null: false
+    t.string   "order_number"
+    t.text     "description"
+    t.string   "manufacturer"
+    t.string   "origin"
+    t.string   "url"
+    t.string   "image"
+    t.integer  "article_category_id"
+    t.integer  "price_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "assets", force: true do |t|

@@ -9,6 +9,8 @@ class Supplier < ActiveRecord::Base
 
   mount_uploader :logo, ImageUploader
 
+  has_many :articles
+
   #def articles_updated_at
   #  articles.order('articles.updated_on DESC').first.try(:updated_on)
   #end
