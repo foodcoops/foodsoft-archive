@@ -2,6 +2,19 @@ ActiveAdmin.register Article do
   permit_params :supplier_id, :name, :order_number, :description, :manufacturer, :origin, :url, :image,
     :article_category_id, price_attributes: [:unit, :unit_quantity, :price, :deposit, :tax]
 
+  index as: :table do
+    selectable_column
+    column 'Nr', :order_number
+    column :name do |article|
+      link_to article.name, admin_article_path(article)
+    end
+    column :unit do |a| a.price.unit end
+    column :supplier
+    column :manufacturer
+    column :price do |a| number_to_currency a.price.price end
+    column :updated_at
+    actions
+  end
  
   filter :supplier, as: :select
   filter :article_category
