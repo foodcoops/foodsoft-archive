@@ -3,25 +3,26 @@
   %p= raw @active_admin_import_model.hint
 %p
   Here you can import new #{resource_class.model_name.plural} from a spreadsheet.
-  - if show_cols
-    The following column headers are available:
 - if show_cols
-  %table
-    %thead
-      %tr
-        %th Column header
-        %th Description
-        %th
-    %tbody
-      - for column in resource_attributes
+  .accordion
+    %h3 Column headers
+    %p The following column headers are available:
+    %table
+      %thead
         %tr
-          %td
-            %tt= column
-          %td
-            = resource_class.human_attribute_name column
-          %td
-            - if resource_class.validators_on(column).map(&:class).include? ActiveRecord::Validations::PresenceValidator
-              (required)
+          %th Column header
+          %th Description
+          %th
+      %tbody
+        - for column in resource_attributes
+          %tr
+            %td
+              %tt= column
+            %td
+              = resource_class.human_attribute_name column
+            %td
+              - if resource_class.validators_on(column).map(&:class).include? ActiveRecord::Validations::PresenceValidator
+                (required)
 
 = semantic_form_for @active_admin_import_model, url: {action: :do_import}, html: {multipart: true} do |f|
   = f.inputs do
@@ -30,4 +31,3 @@
   = f.actions do
     = f.action :submit, label: t('active_admin_import.import_btn'),
         button_html: {disable_with: t('active_admin_import.import_btn_disabled')}
-

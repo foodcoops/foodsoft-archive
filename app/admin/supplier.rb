@@ -1,33 +1,34 @@
 ActiveAdmin.register Supplier do
   permit_params :stype, :name, :email, :address, :phone, :phone2, :fax, :url, :vat_number, :chamber_number, :logo
+  decorate_with SupplierDecorator
 
   index as: :table do
     selectable_column
+    column :logo, :logo_row
     column :name
     column :stype
-    column :address
+    column :articles do |supplier|
+      link_to supplier.articles.count, admin_articles_path(q: {supplier_id_eq: supplier.id})
+    end
     column :email
-    column :created_at
+    column :updated_at, sortable: :updated_at do |supplier|
+      supplier.updated_at.to_date
+    end
     actions
   end
+
   index as: :map
+
   index as: :grid do |supplier|
     div style: 'display: inline-block' do
-      link_to admin_supplier_path(supplier) do
-        if supplier.logo
-          image_tag supplier.logo_url(:grid) 
-        else
-          # TODO placeholder
-          div style: 'width: 30px; height: 30px;'
-        end
-      end
+      link_to supplier.logo_grid, admin_supplier_path(supplier)
     end
   end
 
   filter :stype, as: :select
   filter :name
   filter :email
-  filter :created_at
+  filter :updated_at
 
   show title: Proc.new {|s| "#{s.name} (#{s.stype})"} do
     attributes_table do
@@ -47,8 +48,8 @@ ActiveAdmin.register Supplier do
     end
   end
 
-  sidebar "Logo", only: :show, if: Proc.new {supplier.logo} do
-    image_tag supplier.logo_url, width: '100%' if supplier.logo
+  sidebar "Logo", only: :show, if: Proc.new {supplier.logo.present?} do
+    image_tag supplier.logo_url, width: '100%'
   end
 
   sidebar "Map", only: :show, if: Proc.new {supplier.latitude and supplier.longitude} do
@@ -75,5 +76,8 @@ ActiveAdmin.register Supplier do
     end
     f.actions
   end
+
+  # @todo make this work with geocoder
+  active_admin_import validate: true, timestamps: true, back: :admin_suppliers, template: 'admin/import_supplier'
 
 end

@@ -24,11 +24,13 @@ gem 'gmaps4rails'
 gem 'underscore-rails'          # for gmaps4rails
 gem 'markerclustererplus-rails' # for gmaps4rails
 
+gem 'draper'
 gem 'activeadmin', github: 'gregbell/active_admin'
 gem 'carrierwave'
 gem 'mini_magick'
 gem 'awesome_nested_set'
 gem 'activeadmin-sortable-tree', github: 'wvengen/activeadmin-sortable-tree'
+gem 'active_admin_import'
 
 group :development do
   gem 'better_errors'
