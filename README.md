@@ -5,5 +5,6 @@ This is a tryout of rebuilding Foodsoft/Sharedlists from scratch using [active_a
 
 Initially generated with [rails_apps_composer](https://github.com/RailsApps/rails_apps_composer).
 
+See the `screenshots` directory for a rough idea.
 
 The seed contains some basic sample data; untar the file `seed_uploads.tar.gz` to unpack the associated images (you may need to fix permissions afterwards).
