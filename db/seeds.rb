@@ -1,20 +1,16 @@
-# This file should contain all the record creation needed to seed the database with its default values.
+# This file contains all the record creation needed to seed the database with its default values.
 # The data can then be loaded with the rake db:seed (or created alongside the db with db:setup).
 #
-# Examples:
-#
-#   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
-#   Mayor.create(name: 'Emanuel', city: cities.first)
-# Environment variables (ENV['...']) can be set in the file config/application.yml.
-# See http://railsapps.github.io/rails-environment-variables.html
-puts 'ROLES'
-YAML.load(ENV['ROLES']).each do |role|
-  Role.find_or_create_by_name(role)
-  puts 'role: ' << role
-end
-puts 'DEFAULT USERS'
-user = User.find_or_create_by_email :name => ENV['ADMIN_NAME'].dup, :email => ENV['ADMIN_EMAIL'].dup, :password => ENV['ADMIN_PASSWORD'].dup, :password_confirmation => ENV['ADMIN_PASSWORD'].dup
-puts 'user: ' << user.name
+user_roles = (ENV['ROLES'] || 'admin user VIP').split
+user_passwd = ENV['ADMIN_PASSWORD'] || 'changeme'
+user_attrs = {
+  name: ENV['ADMIN_NAME'] || 'Anton Administrator',
+  email: ENV['ADMIN_EMAIL'] || 'admin@example.com',
+  password: user_passwd,
+  password_confirmation: user_passwd,
+}
+user = User.create!(user_attrs)
+puts "Default user: #{user.name} <#{user.email}>"
 user.confirm!
 user.add_role :admin
 
@@ -22,11 +18,11 @@ user.add_role :admin
 Article.create!([
   {supplier_id: 1, name: "Aardbanaan", order_number: "", description: "", manufacturer: "", origin: "", url: "", image: nil, article_category_id: 2, price_id: nil}
 ])
+p = ArticleCategory.create!(name: "Ingredients")
 ArticleCategory.create!([
-  {name: "Ingrediënten", icon: nil, parent_id: nil, lft: 1, rgt: 8, depth: 0},
-  {name: "Melk", icon: nil, parent_id: 1, lft: 2, rgt: 3, depth: 1},
-  {name: "Gluten", icon: nil, parent_id: 1, lft: 4, rgt: 5, depth: 1},
-  {name: "Soja", icon: nil, parent_id: 1, lft: 6, rgt: 7, depth: 1}
+  {name: "Milk", parent: p},
+  {name: "Gluten", parent: p},
+  {name: "Soy", parent: p}
 ])
 Supplier.create!([
   {name: "CoolBoer", stype: "farm", email: "cool@boer.test", address: "Damrak, Amsterdam, Nederland", latitude: "52.3752124", longitude: "4.8958764", phone: "1234567890", phone2: "", fax: "", url: "", vat_number: "", chamber_number: "", logo: "farmer.jpeg"},

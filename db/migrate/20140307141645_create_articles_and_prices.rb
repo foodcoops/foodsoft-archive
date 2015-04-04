@@ -29,11 +29,10 @@ class CreateArticlesAndPrices < ActiveRecord::Migration
     create_table :article_categories do |t|
       t.string :name, null: false
       t.string :icon
-      # for awesome_nested_set
-      t.integer :parent_id
-      t.integer :lft
-      t.integer :rgt
-      t.integer :depth
+      t.string :ancestry
+      t.integer :position
+
+      t.index :ancestry
     end
   end
 end

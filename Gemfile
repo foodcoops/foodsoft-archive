@@ -1,19 +1,18 @@
 source 'https://rubygems.org'
-ruby '2.1.1'
 
-gem 'rails', '4.0.3'
+gem 'rails', '~> 4.0'
 gem 'sqlite3'
-gem 'sass-rails', '~> 4.0.0'
+gem 'sass-rails'
 gem 'uglifier', '>= 1.3.0'
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails'
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 1.2'
-gem 'bootstrap-sass', '>= 3.0.0.0'
+gem 'bootstrap-sass'
 gem 'cancan'
 gem 'devise'
 gem 'devise_invitable'
-gem 'figaro'
 gem 'haml-rails'
 gem 'rolify'
 gem 'simple_form'
@@ -25,11 +24,12 @@ gem 'underscore-rails'          # for gmaps4rails
 gem 'markerclustererplus-rails' # for gmaps4rails
 
 gem 'draper'
-gem 'activeadmin', github: 'gregbell/active_admin'
+gem 'activeadmin', '~> 1.0.0pre1'
 gem 'carrierwave'
 gem 'mini_magick'
-gem 'awesome_nested_set'
-gem 'activeadmin-sortable-tree', github: 'wvengen/activeadmin-sortable-tree'
+gem 'ancestry'
+gem 'acts_as_list'
+gem 'active_admin-sortable_tree'
 gem 'active_admin_import'
 
 group :development do
@@ -38,6 +38,7 @@ group :development do
   gem 'html2haml'
   gem 'quiet_assets'
   gem 'rails_layout'
+  gem 'dotenv-rails'
 end
 
 group :development, :test do

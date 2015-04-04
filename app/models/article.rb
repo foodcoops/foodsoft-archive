@@ -1,5 +1,5 @@
 class Article < ActiveRecord::Base
-  belongs_to :supplier
+  belongs_to :supplier, touch: true
   belongs_to :article_category
 
   # an article can have many prices, but only one current price
@@ -9,8 +9,6 @@ class Article < ActiveRecord::Base
 
   # always use latest price (can be changed when we'll support scheduled price changes)
   before_save { price = prices.first if price }
-  # update supplier timestamp on any change
-  after_save { Supplier.touch }
 
   default_scope -> { includes(:price) }
 

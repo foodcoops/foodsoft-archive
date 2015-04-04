@@ -2,6 +2,5 @@
 #= require underscore
 #= require gmaps/google
 
-#= require jquery.ui.accordion
+#= require jquery-ui/accordion
 $ -> $('.accordion').accordion()
-

@@ -13,50 +13,16 @@
 
 ActiveRecord::Schema.define(version: 20140307141645) do
 
-  create_table "active_admin_comments", force: true do |t|
-    t.string   "namespace"
-    t.text     "body"
-    t.string   "resource_id",   null: false
-    t.string   "resource_type", null: false
-    t.integer  "author_id"
-    t.string   "author_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
-  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace"
-  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
-
-  create_table "activeadmin_settings_pictures", force: true do |t|
-    t.string   "data"
-    t.string   "data_file_size"
-    t.string   "data_content_type"
-    t.integer  "width"
-    t.integer  "height"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "activeadmin_settings_settings", force: true do |t|
-    t.string   "name"
-    t.string   "string"
-    t.string   "file"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "locale"
-  end
-
-  create_table "article_categories", force: true do |t|
-    t.string  "name",      null: false
+  create_table "article_categories", force: :cascade do |t|
+    t.string  "name",     null: false
     t.string  "icon"
-    t.integer "parent_id"
-    t.integer "lft"
-    t.integer "rgt"
-    t.integer "depth"
+    t.string  "ancestry"
+    t.integer "position"
   end
 
-  create_table "article_prices", force: true do |t|
+  add_index "article_categories", ["ancestry"], name: "index_article_categories_on_ancestry"
+
+  create_table "article_prices", force: :cascade do |t|
     t.integer  "article_id",                                          null: false
     t.string   "unit",                                                null: false
     t.integer  "unit_quantity",                         default: 1,   null: false
@@ -67,7 +33,7 @@ ActiveRecord::Schema.define(version: 20140307141645) do
     t.datetime "updated_at"
   end
 
-  create_table "articles", force: true do |t|
+  create_table "articles", force: :cascade do |t|
     t.integer  "supplier_id",         null: false
     t.string   "name",                null: false
     t.string   "order_number"
@@ -82,56 +48,7 @@ ActiveRecord::Schema.define(version: 20140307141645) do
     t.datetime "updated_at"
   end
 
-  create_table "assets", force: true do |t|
-    t.string   "title"
-    t.text     "description"
-    t.string   "tags"
-    t.integer  "user_id"
-    t.string   "content_type"
-    t.string   "upload_file"
-    t.string   "data"
-    t.boolean  "processed",     default: false
-    t.string   "aws_acl",       default: "public-read"
-    t.integer  "data_size"
-    t.integer  "height"
-    t.integer  "width"
-    t.text     "versions_info"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "assets", ["content_type"], name: "index_assets_on_content_type"
-  add_index "assets", ["user_id"], name: "index_assets_on_user_id"
-
-  create_table "attachments", force: true do |t|
-    t.integer "asset_id"
-    t.string  "attachable_type"
-    t.integer "attachable_id"
-    t.integer "position"
-    t.string  "box"
-  end
-
-  add_index "attachments", ["asset_id"], name: "index_attachments_on_asset_id"
-  add_index "attachments", ["attachable_id"], name: "index_attachments_on_attachable_id"
-  add_index "attachments", ["attachable_type", "attachable_id"], name: "index_attachments_on_attachable_type_and_attachable_id"
-
-  create_table "delayed_jobs", force: true do |t|
-    t.integer  "priority",   default: 0, null: false
-    t.integer  "attempts",   default: 0, null: false
-    t.text     "handler",                null: false
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority"
-
-  create_table "roles", force: true do |t|
+  create_table "roles", force: :cascade do |t|
     t.string   "name"
     t.integer  "resource_id"
     t.string   "resource_type"
@@ -142,7 +59,7 @@ ActiveRecord::Schema.define(version: 20140307141645) do
   add_index "roles", ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
   add_index "roles", ["name"], name: "index_roles_on_name"
 
-  create_table "supplier_conditions", force: true do |t|
+  create_table "supplier_conditions", force: :cascade do |t|
     t.integer "supplier_id",                                null: false
     t.decimal "min_order_net",      precision: 8, scale: 2
     t.decimal "min_order_gross",    precision: 8, scale: 2
@@ -151,7 +68,7 @@ ActiveRecord::Schema.define(version: 20140307141645) do
     t.float   "fee_margin"
   end
 
-  create_table "suppliers", force: true do |t|
+  create_table "suppliers", force: :cascade do |t|
     t.string   "name",           null: false
     t.string   "stype"
     t.string   "email",          null: false
@@ -169,7 +86,7 @@ ActiveRecord::Schema.define(version: 20140307141645) do
     t.string   "logo"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: ""
     t.string   "reset_password_token"
@@ -203,7 +120,7 @@ ActiveRecord::Schema.define(version: 20140307141645) do
   add_index "users", ["invited_by_id"], name: "index_users_on_invited_by_id"
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
 
-  create_table "users_roles", id: false, force: true do |t|
+  create_table "users_roles", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "role_id"
   end
